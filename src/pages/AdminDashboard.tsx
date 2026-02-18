@@ -1,6 +1,7 @@
 import AdminLayout from "@/components/layout/AdminLayout";
 import AnimatedCounter from "@/components/dashboard/AnimatedCounter";
 import { Button } from "@/components/ui/button";
+import { useLang } from "@/contexts/LanguageContext";
 
 import {
   Users, DollarSign, ShieldAlert, CheckCircle,
@@ -12,13 +13,6 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts";
 
-const kpiCards = [
-  { label: "Total Revenue", value: 28450, prefix: "$", change: "+12.4%", up: true, icon: DollarSign, color: "text-success", gradient: "from-success/10" },
-  { label: "Active Users", value: 48290, prefix: "", suffix: "", decimals: 0, change: "+8.1%", up: true, icon: Users, color: "text-info", gradient: "from-info/10" },
-  { label: "Pending Payouts", value: 4820, prefix: "$", change: "-3.2%", up: false, icon: Clock, color: "text-warning", gradient: "from-warning/10" },
-  { label: "Fraud Alerts", value: 4, prefix: "", suffix: " flags", decimals: 0, change: "+2 today", up: false, icon: ShieldAlert, color: "text-destructive", gradient: "from-destructive/10" },
-];
-
 const earningsData = [
   { day: "Mon", revenue: 1200, payouts: 780 },
   { day: "Tue", revenue: 1850, payouts: 1200 },
@@ -29,54 +23,64 @@ const earningsData = [
   { day: "Sun", revenue: 2600, payouts: 1690 },
 ];
 
-const withdrawals = [
-  { user: "Ahmed M.", amount: "$45.00", method: "USDT TRC20", status: "pending", date: "2h ago", risk: "low" },
-  { user: "Sara K.", amount: "$120.00", method: "Vodafone Cash", status: "pending", date: "4h ago", risk: "medium" },
-  { user: "Omar F.", amount: "$18.50", method: "USDT TRC20", status: "approved", date: "5h ago", risk: "low" },
-  { user: "Layla H.", amount: "$85.00", method: "Vodafone Cash", status: "rejected", date: "1d ago", risk: "high" },
-  { user: "Karim A.", amount: "$32.00", method: "USDT TRC20", status: "pending", date: "2d ago", risk: "low" },
-];
-
-const fraudAlerts = [
-  { user: "user_8821", issue: "VPN detected on login", severity: "high", time: "30m ago" },
-  { user: "user_2340", issue: "Duplicate device fingerprint", severity: "high", time: "1h ago" },
-  { user: "user_5510", issue: "Abnormal conversion rate: 98%", severity: "medium", time: "3h ago" },
-  { user: "user_7731", issue: "IP shared with 3 accounts", severity: "medium", time: "5h ago" },
-];
-
-const recentUsers = [
-  { name: "Ahmed Mohamed", email: "ahmed@ex.com", joined: "2h ago", status: "active", balance: "$47.82" },
-  { name: "Sara Khalil", email: "sara@ex.com", joined: "5h ago", status: "active", balance: "$122.10" },
-  { name: "Omar Farouk", email: "omar@ex.com", joined: "1d ago", status: "flagged", balance: "$8.50" },
-  { name: "Layla Hassan", email: "layla@ex.com", joined: "2d ago", status: "banned", balance: "$0.00" },
-];
-
 const COLORS = ["hsl(42 95% 55%)", "hsl(142 71% 45%)", "hsl(211 85% 58%)", "hsl(4 86% 58%)"];
-const pieData = [
-  { name: "Surveys", value: 45 },
-  { name: "Installs", value: 30 },
-  { name: "Videos", value: 15 },
-  { name: "Trials", value: 10 },
-];
 
 export default function AdminDashboard() {
+  const { t } = useLang();
+
+  const kpiCards = [
+    { label: t("admin.revenue"), value: 28450, prefix: "$", change: "+12.4%", up: true, icon: DollarSign, color: "text-success", gradient: "from-success/10" },
+    { label: t("admin.activeUsers"), value: 48290, prefix: "", suffix: "", decimals: 0, change: "+8.1%", up: true, icon: Users, color: "text-info", gradient: "from-info/10" },
+    { label: t("admin.pendingPayouts"), value: 4820, prefix: "$", change: "-3.2%", up: false, icon: Clock, color: "text-warning", gradient: "from-warning/10" },
+    { label: t("admin.fraudAlerts"), value: 4, prefix: "", suffix: ` ${t("admin.flags")}`, decimals: 0, change: "+2 today", up: false, icon: ShieldAlert, color: "text-destructive", gradient: "from-destructive/10" },
+  ];
+
+  const withdrawals = [
+    { user: "Ahmed M.", amount: "$45.00", method: "USDT TRC20", status: "pending", date: "2h", risk: "low" },
+    { user: "Sara K.", amount: "$120.00", method: "Vodafone Cash", status: "pending", date: "4h", risk: "medium" },
+    { user: "Omar F.", amount: "$18.50", method: "USDT TRC20", status: "approved", date: "5h", risk: "low" },
+    { user: "Layla H.", amount: "$85.00", method: "Vodafone Cash", status: "rejected", date: "1d", risk: "high" },
+    { user: "Karim A.", amount: "$32.00", method: "USDT TRC20", status: "pending", date: "2d", risk: "low" },
+  ];
+
+  const fraudAlerts = [
+    { user: "user_8821", issue: "VPN detected on login", severity: "high", time: "30m" },
+    { user: "user_2340", issue: "Duplicate device fingerprint", severity: "high", time: "1h" },
+    { user: "user_5510", issue: "Abnormal conversion rate: 98%", severity: "medium", time: "3h" },
+    { user: "user_7731", issue: "IP shared with 3 accounts", severity: "medium", time: "5h" },
+  ];
+
+  const recentUsers = [
+    { name: "Ahmed Mohamed", email: "ahmed@ex.com", joined: "2h", status: "active", balance: "$47.82" },
+    { name: "Sara Khalil", email: "sara@ex.com", joined: "5h", status: "active", balance: "$122.10" },
+    { name: "Omar Farouk", email: "omar@ex.com", joined: "1d", status: "flagged", balance: "$8.50" },
+    { name: "Layla Hassan", email: "layla@ex.com", joined: "2d", status: "banned", balance: "$0.00" },
+  ];
+
+  const pieData = [
+    { name: t("cat.survey"), value: 45 },
+    { name: t("cat.install"), value: 30 },
+    { name: t("cat.video"), value: 15 },
+    { name: t("cat.trial"), value: 10 },
+  ];
+
   const statusBadge = (s: string) => {
-    if (s === "pending") return <span className="badge-warning">Pending</span>;
-    if (s === "approved") return <span className="badge-success">Approved</span>;
-    if (s === "rejected") return <span className="badge-danger">Rejected</span>;
+    if (s === "pending") return <span className="badge-warning">{t("status.pending")}</span>;
+    if (s === "approved") return <span className="badge-success">{t("status.approved")}</span>;
+    if (s === "rejected") return <span className="badge-danger">{t("status.rejected")}</span>;
     return null;
   };
 
   const riskBadge = (r: string) => {
-    if (r === "high") return <span className="badge-danger">{r}</span>;
-    if (r === "medium") return <span className="badge-warning">{r}</span>;
-    return <span className="badge-success">{r}</span>;
+    if (r === "high") return <span className="badge-danger">{t("risk.high")}</span>;
+    if (r === "medium") return <span className="badge-warning">{t("risk.medium")}</span>;
+    return <span className="badge-success">{t("risk.low")}</span>;
   };
 
   const userStatusBadge = (s: string) => {
-    if (s === "active") return <span className="badge-success">Active</span>;
-    if (s === "flagged") return <span className="badge-warning">Flagged</span>;
-    return <span className="badge-danger">Banned</span>;
+    if (s === "active") return <span className="badge-success">{t("status.active")}</span>;
+    if (s === "flagged") return <span className="badge-warning">{t("status.flagged")}</span>;
+    return <span className="badge-danger">{t("status.banned")}</span>;
   };
 
   const severityIcon = (s: string) =>
@@ -88,16 +92,16 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-heading font-bold text-2xl">Admin Dashboard</h1>
-            <p className="text-muted-foreground text-sm mt-1">Platform overview — Last updated: just now</p>
+            <h1 className="font-heading font-bold text-2xl">{t("admin.title")}</h1>
+            <p className="text-muted-foreground text-sm mt-1">{t("admin.lastUpdated")}</p>
           </div>
           <div className="flex items-center gap-2">
             <div className="glass-card px-3 py-1.5 text-xs flex items-center gap-2">
               <Activity className="w-3.5 h-3.5 text-success" />
-              <span className="text-muted-foreground">48,290 online</span>
+              <span className="text-muted-foreground">48,290 {t("admin.online")}</span>
             </div>
             <Button size="sm" className="bg-gradient-gold text-primary-foreground font-semibold shadow-gold hover:opacity-90 text-xs">
-              Export Report
+              {t("admin.exportReport")}
             </Button>
           </div>
         </div>
@@ -136,12 +140,12 @@ export default function AdminDashboard() {
           <div className="lg:col-span-2 glass-card p-5">
             <div className="flex items-center justify-between mb-5">
               <div>
-                <h2 className="font-heading font-semibold">Revenue vs Payouts</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">Last 7 days</p>
+                <h2 className="font-heading font-semibold">{t("admin.revenueChart")}</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">{t("admin.last7days")}</p>
               </div>
               <div className="flex items-center gap-4 text-xs">
-                <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-primary" />Revenue</div>
-                <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-success" />Payouts</div>
+                <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-primary" />{t("admin.revenue2")}</div>
+                <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-success" />{t("admin.payouts")}</div>
               </div>
             </div>
             <ResponsiveContainer width="100%" height={220}>
@@ -171,8 +175,8 @@ export default function AdminDashboard() {
 
           {/* Offer Categories Pie */}
           <div className="glass-card p-5">
-            <h2 className="font-heading font-semibold mb-1">Offer Categories</h2>
-            <p className="text-xs text-muted-foreground mb-4">Earnings distribution</p>
+            <h2 className="font-heading font-semibold mb-1">{t("admin.offerCats")}</h2>
+            <p className="text-xs text-muted-foreground mb-4">{t("admin.earningsDist")}</p>
             <ResponsiveContainer width="100%" height={160}>
               <PieChart>
                 <Pie data={pieData} cx="50%" cy="50%" innerRadius={45} outerRadius={70} paddingAngle={4} dataKey="value">
@@ -200,10 +204,10 @@ export default function AdminDashboard() {
           <div className="glass-card p-5">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="font-heading font-semibold">Withdrawal Queue</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">3 pending approval</p>
+                <h2 className="font-heading font-semibold">{t("admin.withdrawQueue")}</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">{t("admin.pending3")}</p>
               </div>
-              <Button variant="ghost" size="sm" className="text-xs text-primary gap-1">All <ChevronRight className="w-3 h-3" /></Button>
+              <Button variant="ghost" size="sm" className="text-xs text-primary gap-1">{t("admin.all")} <ChevronRight className="w-3 h-3" /></Button>
             </div>
             <div className="space-y-3">
               {withdrawals.map((w) => (
@@ -218,7 +222,7 @@ export default function AdminDashboard() {
                     </div>
                     <div className="text-xs text-muted-foreground">{w.method} · {w.date}</div>
                   </div>
-                  <div className="text-right shrink-0">
+                  <div className="text-end shrink-0">
                     <div className="font-semibold text-sm text-success">{w.amount}</div>
                     {statusBadge(w.status)}
                   </div>
@@ -243,11 +247,11 @@ export default function AdminDashboard() {
               <div>
                 <h2 className="font-heading font-semibold flex items-center gap-2">
                   <ShieldAlert className="w-5 h-5 text-destructive" />
-                  Fraud Alerts
+                  {t("admin.fraudTitle")}
                 </h2>
-                <p className="text-xs text-muted-foreground mt-0.5">4 active flags require review</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{t("admin.fraudSubtitle")}</p>
               </div>
-              <span className="badge-danger">4 Active</span>
+              <span className="badge-danger">{t("admin.active4")}</span>
             </div>
             <div className="space-y-3">
               {fraudAlerts.map((alert) => (
@@ -257,7 +261,9 @@ export default function AdminDashboard() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span className="text-sm font-medium font-mono">{alert.user}</span>
-                        <span className={alert.severity === "high" ? "badge-danger" : "badge-warning"}>{alert.severity}</span>
+                        <span className={alert.severity === "high" ? "badge-danger" : "badge-warning"}>
+                          {alert.severity === "high" ? t("sev.high") : t("sev.medium")}
+                        </span>
                       </div>
                       <div className="text-xs text-muted-foreground">{alert.issue}</div>
                       <div className="text-xs text-muted-foreground mt-1">{alert.time}</div>
@@ -280,18 +286,18 @@ export default function AdminDashboard() {
         {/* Recent Users */}
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-heading font-semibold">Recent Users</h2>
-            <Button variant="ghost" size="sm" className="text-xs text-primary gap-1">Manage All <ChevronRight className="w-3 h-3" /></Button>
+            <h2 className="font-heading font-semibold">{t("admin.recentUsers")}</h2>
+            <Button variant="ghost" size="sm" className="text-xs text-primary gap-1">{t("admin.manageAll")} <ChevronRight className="w-3 h-3" /></Button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="text-xs text-muted-foreground border-b border-border">
-                  <th className="text-left pb-3 font-medium">User</th>
-                  <th className="text-left pb-3 font-medium">Status</th>
-                  <th className="text-left pb-3 font-medium hidden sm:table-cell">Joined</th>
-                  <th className="text-right pb-3 font-medium">Balance</th>
-                  <th className="text-right pb-3 font-medium">Actions</th>
+                  <th className="text-start pb-3 font-medium">{t("admin.user")}</th>
+                  <th className="text-start pb-3 font-medium">{t("admin.status")}</th>
+                  <th className="text-start pb-3 font-medium hidden sm:table-cell">{t("admin.joined")}</th>
+                  <th className="text-end pb-3 font-medium">{t("admin.balance")}</th>
+                  <th className="text-end pb-3 font-medium">{t("admin.actions")}</th>
                 </tr>
               </thead>
               <tbody className="space-y-2">
@@ -310,8 +316,8 @@ export default function AdminDashboard() {
                     </td>
                     <td className="py-3">{userStatusBadge(user.status)}</td>
                     <td className="py-3 text-xs text-muted-foreground hidden sm:table-cell">{user.joined}</td>
-                    <td className="py-3 text-right font-semibold text-success text-sm">{user.balance}</td>
-                    <td className="py-3 text-right">
+                    <td className="py-3 text-end font-semibold text-success text-sm">{user.balance}</td>
+                    <td className="py-3 text-end">
                       <div className="flex items-center justify-end gap-1">
                         <button className="p-1.5 rounded-lg hover:bg-surface-elevated text-muted-foreground hover:text-foreground transition-colors">
                           <Eye className="w-3.5 h-3.5" />
@@ -331,4 +337,3 @@ export default function AdminDashboard() {
     </AdminLayout>
   );
 }
-
