@@ -6,18 +6,8 @@ import {
   ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-
-const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-  { icon: Zap, label: "Offerwall", path: "/dashboard/offers" },
-  { icon: ListChecks, label: "Task History", path: "/dashboard/tasks" },
-  { icon: Users, label: "Referrals", path: "/dashboard/referrals" },
-  { icon: Wallet, label: "Withdrawals", path: "/dashboard/withdraw" },
-  { icon: Trophy, label: "Leaderboard", path: "/dashboard/leaderboard" },
-  { icon: Star, label: "VIP", path: "/dashboard/vip" },
-  { icon: Settings, label: "Settings", path: "/dashboard/settings" },
-];
+import LanguageToggle from "@/components/ui/LanguageToggle";
+import { useLang } from "@/contexts/LanguageContext";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -26,6 +16,18 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const { t } = useLang();
+
+  const navItems = [
+    { icon: LayoutDashboard, label: t("layout.dashboard"), path: "/dashboard" },
+    { icon: Zap, label: t("layout.offerwall"), path: "/dashboard/offers" },
+    { icon: ListChecks, label: t("layout.taskHistory"), path: "/dashboard/tasks" },
+    { icon: Users, label: t("layout.referrals"), path: "/dashboard/referrals" },
+    { icon: Wallet, label: t("layout.withdrawals"), path: "/dashboard/withdraw" },
+    { icon: Trophy, label: t("layout.leaderboard"), path: "/dashboard/leaderboard" },
+    { icon: Star, label: t("layout.vip"), path: "/dashboard/vip" },
+    { icon: Settings, label: t("layout.settings"), path: "/dashboard/settings" },
+  ];
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
@@ -70,8 +72,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             >
               <item.icon className={`w-4 h-4 ${isActive ? "text-primary" : "group-hover:text-foreground"}`} />
               {item.label}
-              {isActive && <ChevronRight className="w-3 h-3 ml-auto text-primary" />}
-              {item.label === "VIP" && !isActive && <Star className="w-3 h-3 ml-auto text-warning" />}
+              {isActive && <ChevronRight className="w-3 h-3 ms-auto text-primary" />}
+              {item.label === t("layout.vip") && !isActive && <Star className="w-3 h-3 ms-auto text-warning" />}
             </Link>
           );
         })}
@@ -80,10 +82,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Bottom */}
       <div className="p-4 border-t border-border space-y-2">
         <Link to="/admin" className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-colors">
-          <ShieldCheck className="w-4 h-4" /> Admin Panel
+          <ShieldCheck className="w-4 h-4" /> {t("layout.adminPanel")}
         </Link>
         <Link to="/login" className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-destructive hover:bg-destructive-dim transition-colors">
-          <LogOut className="w-4 h-4" /> Sign Out
+          <LogOut className="w-4 h-4" /> {t("layout.signOut")}
         </Link>
       </div>
     </div>
@@ -92,7 +94,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-border" style={{ background: "hsl(var(--background-secondary))" }}>
+      <aside className="hidden lg:flex flex-col w-64 shrink-0 border-e border-border" style={{ background: "hsl(var(--background-secondary))" }}>
         <SidebarContent />
       </aside>
 
@@ -100,10 +102,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/60" onClick={() => setSidebarOpen(false)} />
-          <aside className="relative w-72 border-r border-border flex flex-col z-10" style={{ background: "hsl(var(--background-secondary))" }}>
+          <aside className="relative w-72 border-e border-border flex flex-col z-10" style={{ background: "hsl(var(--background-secondary))" }}>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+              className="absolute top-4 end-4 text-muted-foreground hover:text-foreground"
             >
               <X className="w-5 h-5" />
             </button>
@@ -123,12 +125,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex-1" />
+          <LanguageToggle />
           <button className="relative text-muted-foreground hover:text-foreground transition-colors">
             <Bell className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-destructive rounded-full text-xs flex items-center justify-center text-destructive-foreground font-bold">3</span>
+            <span className="absolute -top-1 -end-1 w-4 h-4 bg-destructive rounded-full text-xs flex items-center justify-center text-destructive-foreground font-bold">3</span>
           </button>
           <Button size="sm" className="bg-gradient-gold text-primary-foreground font-semibold shadow-gold hover:opacity-90 hidden sm:flex">
-            <Star className="w-3.5 h-3.5 mr-1.5" /> Upgrade VIP
+            <Star className="w-3.5 h-3.5 me-1.5" /> {t("dash.upgradeVipBtn")}
           </Button>
         </header>
 

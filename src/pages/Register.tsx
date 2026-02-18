@@ -3,9 +3,12 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import LanguageToggle from "@/components/ui/LanguageToggle";
+import { useLang } from "@/contexts/LanguageContext";
 import { Eye, EyeOff, Zap, Lock, Mail, User, Gift, ArrowRight } from "lucide-react";
 
 export default function Register() {
+  const { t } = useLang();
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState<"form" | "otp">("form");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -38,24 +41,27 @@ export default function Register() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <div className="w-full max-w-md">
-          <Link to="/" className="flex items-center gap-2 mb-10">
-            <div className="w-8 h-8 rounded-lg bg-gradient-gold flex items-center justify-center">
-              <Zap className="w-4 h-4 text-primary-foreground" />
-            </div>
-            <span className="font-heading font-bold text-lg gold-text">ZainCash Pro</span>
-          </Link>
+          <div className="flex items-center justify-between mb-10">
+            <Link to="/" className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-gold flex items-center justify-center">
+                <Zap className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <span className="font-heading font-bold text-lg gold-text">ZainCash Pro</span>
+            </Link>
+            <LanguageToggle />
+          </div>
 
           <div className="text-center mb-8">
             <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
               <Mail className="w-8 h-8 text-primary" />
             </div>
-            <h1 className="font-heading font-bold text-3xl mb-2">Check Your Email</h1>
-            <p className="text-muted-foreground">We sent a 6-digit code to <span className="text-foreground font-medium">{form.email}</span></p>
+            <h1 className="font-heading font-bold text-3xl mb-2">{t("otp.title")}</h1>
+            <p className="text-muted-foreground">{t("otp.subtitle")} <span className="text-foreground font-medium">{form.email}</span></p>
           </div>
 
           <form onSubmit={handleOtpVerify} className="space-y-6">
             <div>
-              <Label className="text-sm font-medium mb-3 block text-center">Enter Verification Code</Label>
+              <Label className="text-sm font-medium mb-3 block text-center">{t("otp.label")}</Label>
               <div className="flex justify-center gap-3">
                 {otp.map((digit, i) => (
                   <input
@@ -81,15 +87,15 @@ export default function Register() {
               {loading ? (
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground animate-spin" />
-                  Verifying...
+                  {t("otp.verifying")}
                 </div>
-              ) : "Verify & Create Account"}
+              ) : t("otp.verify")}
             </Button>
           </form>
 
           <p className="text-center text-sm text-muted-foreground mt-4">
-            Didn't receive the code?{" "}
-            <button className="text-primary hover:underline font-medium">Resend</button>
+            {t("otp.noCode")}{" "}
+            <button className="text-primary hover:underline font-medium">{t("otp.resend")}</button>
           </p>
         </div>
       </div>
@@ -111,14 +117,14 @@ export default function Register() {
           </Link>
           <div className="mb-auto">
             <h2 className="font-heading font-bold text-5xl mb-6 leading-tight">
-              Join Free.<br /><span className="gold-text">Earn Real.</span>
+              {t("reg.joinFree")}<br /><span className="gold-text">{t("reg.earnReal")}</span>
             </h2>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { icon: Gift, label: "Welcome Bonus", value: "$0.50" },
-                { icon: Zap, label: "Daily Offers", value: "500+" },
-                { icon: User, label: "Referral Bonus", value: "10%" },
-                { icon: Lock, label: "Min. Withdrawal", value: "$10" },
+                { icon: Gift, label: t("reg.welcomeBonus"), value: "$0.50" },
+                { icon: Zap, label: t("reg.dailyOffers"), value: "500+" },
+                { icon: User, label: t("reg.referralBonus"), value: "10%" },
+                { icon: Lock, label: t("reg.minWithdraw"), value: "$10" },
               ].map((s) => (
                 <div key={s.label} className="glass-card p-4">
                   <s.icon className="w-5 h-5 text-primary mb-2" />
@@ -134,65 +140,72 @@ export default function Register() {
       {/* Right Panel */}
       <div className="flex-1 flex items-center justify-center p-6 overflow-y-auto">
         <div className="w-full max-w-md py-8">
-          <Link to="/" className="lg:hidden flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 rounded-lg bg-gradient-gold flex items-center justify-center">
-              <Zap className="w-4 h-4 text-primary-foreground" />
-            </div>
-            <span className="font-heading font-bold text-lg gold-text">ZainCash Pro</span>
-          </Link>
+          <div className="lg:hidden flex items-center justify-between mb-8">
+            <Link to="/" className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-gold flex items-center justify-center">
+                <Zap className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <span className="font-heading font-bold text-lg gold-text">ZainCash Pro</span>
+            </Link>
+            <LanguageToggle />
+          </div>
+
+          <div className="hidden lg:flex justify-end mb-4">
+            <LanguageToggle />
+          </div>
 
           <div className="mb-8">
-            <h1 className="font-heading font-bold text-3xl mb-2">Create your account</h1>
-            <p className="text-muted-foreground">Start earning money today — it's completely free</p>
+            <h1 className="font-heading font-bold text-3xl mb-2">{t("reg.title")}</h1>
+            <p className="text-muted-foreground">{t("reg.subtitle")}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <Label className="text-sm font-medium">Full Name</Label>
+              <Label className="text-sm font-medium">{t("reg.name")}</Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <User className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   placeholder="Ahmed Mohamed"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="pl-10 bg-surface border-border focus:border-primary h-12"
+                  className="ps-10 bg-surface border-border focus:border-primary h-12"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-sm font-medium">Email Address</Label>
+              <Label className="text-sm font-medium">{t("reg.email")}</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Mail className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   type="email"
                   placeholder="you@example.com"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="pl-10 bg-surface border-border focus:border-primary h-12"
+                  className="ps-10 bg-surface border-border focus:border-primary h-12"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-sm font-medium">Password</Label>
+              <Label className="text-sm font-medium">{t("reg.password")}</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Lock className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   type={showPassword ? "text" : "password"}
-                  placeholder="Min. 8 characters"
+                  placeholder={t("reg.passwordPlaceholder")}
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className="pl-10 pr-10 bg-surface border-border focus:border-primary h-12"
+                  className="ps-10 pe-10 bg-surface border-border focus:border-primary h-12"
                   required
                   minLength={8}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -200,22 +213,24 @@ export default function Register() {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-sm font-medium">Referral Code <span className="text-muted-foreground font-normal">(Optional)</span></Label>
+              <Label className="text-sm font-medium">
+                {t("reg.referral")} <span className="text-muted-foreground font-normal">{t("reg.referralOpt")}</span>
+              </Label>
               <div className="relative">
-                <Gift className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Gift className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
-                  placeholder="Enter referral code"
+                  placeholder={t("reg.referralPlaceholder")}
                   value={form.referral}
                   onChange={(e) => setForm({ ...form, referral: e.target.value })}
-                  className="pl-10 bg-surface border-border focus:border-primary h-12"
+                  className="ps-10 bg-surface border-border focus:border-primary h-12"
                 />
               </div>
             </div>
 
             <p className="text-xs text-muted-foreground">
-              By registering, you agree to our{" "}
-              <a href="#" className="text-primary hover:underline">Terms of Service</a> and{" "}
-              <a href="#" className="text-primary hover:underline">Privacy Policy</a>.
+              {t("reg.terms")}{" "}
+              <a href="#" className="text-primary hover:underline">{t("reg.termsLink")}</a> {t("reg.and")}{" "}
+              <a href="#" className="text-primary hover:underline">{t("reg.privacy")}</a>.
             </p>
 
             <Button
@@ -226,17 +241,17 @@ export default function Register() {
               {loading ? (
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground animate-spin" />
-                  Sending OTP...
+                  {t("reg.loading")}
                 </div>
               ) : (
-                <>Create Account <ArrowRight className="ml-2 w-4 h-4" /></>
+                <>{t("reg.submit")} <ArrowRight className="ms-2 w-4 h-4" /></>
               )}
             </Button>
           </form>
 
           <p className="text-center text-sm text-muted-foreground mt-4">
-            Already have an account?{" "}
-            <Link to="/login" className="text-primary font-semibold hover:underline">Sign in</Link>
+            {t("reg.hasAccount")}{" "}
+            <Link to="/login" className="text-primary font-semibold hover:underline">{t("reg.signin")}</Link>
           </p>
         </div>
       </div>

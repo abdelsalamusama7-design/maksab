@@ -3,6 +3,7 @@ import AnimatedCounter from "@/components/dashboard/AnimatedCounter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { useLang } from "@/contexts/LanguageContext";
 import {
   DollarSign, TrendingUp, Clock, Award, Zap, Copy, Users,
   ChevronRight, Star, Gift, Flame, ExternalLink, Wallet,
@@ -10,42 +11,43 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-const balanceCards = [
-  { label: "Available Balance", value: 47.82, prefix: "$", color: "text-success", icon: DollarSign, glow: "shadow-green", gradient: "from-success/10 to-transparent", badge: "Withdrawable" },
-  { label: "Pending Earnings", value: 8.45, prefix: "$", color: "text-warning", icon: Clock, glow: "", gradient: "from-warning/10 to-transparent", badge: "Processing" },
-  { label: "Lifetime Earnings", value: 312.60, prefix: "$", color: "text-primary", icon: TrendingUp, glow: "shadow-gold", gradient: "from-primary/10 to-transparent", badge: "All Time" },
-  { label: "Points Balance", value: 12450, prefix: "", suffix: " pts", color: "text-info", decimals: 0, icon: Award, glow: "", gradient: "from-info/10 to-transparent", badge: "Redeemable" },
-];
-
-const recentTasks = [
-  { name: "Survey - Electronics", amount: "+$1.20", status: "completed", time: "2h ago" },
-  { name: "App Install - Gaming", amount: "+$0.85", status: "completed", time: "5h ago" },
-  { name: "Video Offer - Finance", amount: "+$2.50", status: "pending", time: "8h ago" },
-  { name: "Survey - Automotive", amount: "+$0.60", status: "completed", time: "1d ago" },
-  { name: "Referral Bonus - L1", amount: "+$0.45", status: "completed", time: "2d ago" },
-];
-
-const offers = [
-  { title: "Complete Finance Survey", reward: "$2.80", time: "10 min", category: "Survey", hot: true },
-  { title: "Install VPN App + Use 5 min", reward: "$1.50", time: "5 min", category: "Install", hot: false },
-  { title: "Sign up for Gaming Platform", reward: "$4.00", time: "15 min", category: "Registration", hot: true },
-  { title: "Watch 10 Ads", reward: "$0.30", time: "3 min", category: "Video", hot: false },
-  { title: "Answer Health Quiz", reward: "$1.10", time: "7 min", category: "Survey", hot: false },
-  { title: "Premium App Trial", reward: "$6.50", time: "20 min", category: "Trial", hot: true },
-];
-
-const achievements = [
-  { icon: Flame, label: "7-Day Streak", unlocked: true },
-  { icon: DollarSign, label: "First Withdrawal", unlocked: true },
-  { icon: Users, label: "5 Referrals", unlocked: true },
-  { icon: Trophy, label: "Top 100", unlocked: false },
-  { icon: Star, label: "VIP Member", unlocked: false },
-  { icon: Award, label: "$100 Earned", unlocked: true },
-];
-
 export default function Dashboard() {
+  const { t } = useLang();
   const [copied, setCopied] = useState(false);
   const referralCode = "ZAINCASH-AHMED2025";
+
+  const balanceCards = [
+    { label: t("dash.balance"), value: 47.82, prefix: "$", color: "text-success", icon: DollarSign, glow: "shadow-green", gradient: "from-success/10 to-transparent", badge: t("dash.withdrawable") },
+    { label: t("dash.pending"), value: 8.45, prefix: "$", color: "text-warning", icon: Clock, glow: "", gradient: "from-warning/10 to-transparent", badge: t("dash.processing") },
+    { label: t("dash.lifetime"), value: 312.60, prefix: "$", color: "text-primary", icon: TrendingUp, glow: "shadow-gold", gradient: "from-primary/10 to-transparent", badge: t("dash.allTime") },
+    { label: t("dash.points"), value: 12450, prefix: "", suffix: " pts", color: "text-info", decimals: 0, icon: Award, glow: "", gradient: "from-info/10 to-transparent", badge: t("dash.redeemable") },
+  ];
+
+  const recentTasks = [
+    { name: t("task.survey.electronics"), amount: "+$1.20", status: "completed" as const, time: "2h" },
+    { name: t("task.install.gaming"), amount: "+$0.85", status: "completed" as const, time: "5h" },
+    { name: t("task.video.finance"), amount: "+$2.50", status: "pending" as const, time: "8h" },
+    { name: t("task.survey.auto"), amount: "+$0.60", status: "completed" as const, time: "1d" },
+    { name: t("task.referral.l1"), amount: "+$0.45", status: "completed" as const, time: "2d" },
+  ];
+
+  const offers = [
+    { title: t("feat.earn.title"), reward: "$2.80", time: "10 min", category: t("cat.survey"), hot: true },
+    { title: "Install VPN App + Use 5 min", reward: "$1.50", time: "5 min", category: t("cat.install"), hot: false },
+    { title: "Sign up for Gaming Platform", reward: "$4.00", time: "15 min", category: t("cat.registration"), hot: true },
+    { title: "Watch 10 Ads", reward: "$0.30", time: "3 min", category: t("cat.video"), hot: false },
+    { title: "Answer Health Quiz", reward: "$1.10", time: "7 min", category: t("cat.survey"), hot: false },
+    { title: "Premium App Trial", reward: "$6.50", time: "20 min", category: t("cat.trial"), hot: true },
+  ];
+
+  const achievements = [
+    { icon: Flame, label: t("ach.streak"), unlocked: true },
+    { icon: DollarSign, label: t("ach.firstWithdraw"), unlocked: true },
+    { icon: Users, label: t("ach.referrals"), unlocked: true },
+    { icon: Trophy, label: t("ach.top100"), unlocked: false },
+    { icon: Star, label: t("ach.vip"), unlocked: false },
+    { icon: Award, label: t("ach.earned100"), unlocked: true },
+  ];
 
   const copyReferral = () => {
     navigator.clipboard.writeText(`https://zaincash.pro/ref/${referralCode}`);
@@ -65,16 +67,16 @@ export default function Dashboard() {
         {/* Welcome */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="font-heading font-bold text-2xl">Welcome back, Ahmed! 👋</h1>
-            <p className="text-muted-foreground text-sm mt-1">You have 6 new offers available. Keep earning!</p>
+            <h1 className="font-heading font-bold text-2xl">{t("dash.welcome")}</h1>
+            <p className="text-muted-foreground text-sm mt-1">{t("dash.newOffers")}</p>
           </div>
           <div className="flex items-center gap-2">
             <div className="glass-card px-4 py-2 flex items-center gap-2 text-sm">
               <Flame className="w-4 h-4 text-warning" />
-              <span className="font-semibold">7-Day Streak</span>
+              <span className="font-semibold">{t("dash.streak")}</span>
             </div>
             <Button size="sm" className="bg-gradient-gold text-primary-foreground font-semibold shadow-gold hover:opacity-90">
-              <Gift className="w-3.5 h-3.5 mr-1.5" /> Claim Bonus
+              <Gift className="w-3.5 h-3.5 me-1.5" /> {t("dash.claimBonus")}
             </Button>
           </div>
         </div>
@@ -89,7 +91,7 @@ export default function Dashboard() {
                   <div className="w-9 h-9 rounded-xl bg-surface-elevated flex items-center justify-center">
                     <card.icon className={`w-4.5 h-4.5 ${card.color}`} style={{ width: 18, height: 18 }} />
                   </div>
-                  <span className={`badge-gold text-xs`}>{card.badge}</span>
+                  <span className="badge-gold text-xs">{card.badge}</span>
                 </div>
                 <div className={`font-heading font-bold text-2xl mb-1 ${card.color}`}>
                   <AnimatedCounter
@@ -109,9 +111,9 @@ export default function Dashboard() {
           {/* Offerwall */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="font-heading font-semibold text-lg">Available Offers</h2>
+              <h2 className="font-heading font-semibold text-lg">{t("dash.availableOffers")}</h2>
               <Button variant="ghost" size="sm" className="text-primary text-xs gap-1">
-                View All <ChevronRight className="w-3.5 h-3.5" />
+                {t("dash.viewAll")} <ChevronRight className="w-3.5 h-3.5" />
               </Button>
             </div>
             <div className="grid sm:grid-cols-2 gap-3">
@@ -119,7 +121,7 @@ export default function Dashboard() {
                 <div key={offer.title} className="glass-card p-4 hover:border-primary/30 transition-all duration-200 cursor-pointer group">
                   <div className="flex items-start justify-between mb-2">
                     <span className="badge-info text-xs">{offer.category}</span>
-                    {offer.hot && <span className="badge-danger text-xs flex items-center gap-1"><Flame className="w-3 h-3" /> Hot</span>}
+                    {offer.hot && <span className="badge-danger text-xs flex items-center gap-1"><Flame className="w-3 h-3" /> {t("dash.hot")}</span>}
                   </div>
                   <h3 className="font-medium text-sm mb-3 leading-snug group-hover:text-primary transition-colors">{offer.title}</h3>
                   <div className="flex items-center justify-between">
@@ -128,7 +130,7 @@ export default function Dashboard() {
                       <div className="text-xs text-muted-foreground">~{offer.time}</div>
                     </div>
                     <Button size="sm" className="bg-gradient-gold text-primary-foreground font-semibold text-xs shadow-gold hover:opacity-90">
-                      Start <ExternalLink className="w-3 h-3 ml-1" />
+                      {t("dash.start")} <ExternalLink className="w-3 h-3 ms-1" />
                     </Button>
                   </div>
                 </div>
@@ -138,10 +140,10 @@ export default function Dashboard() {
             {/* Offerwall iframe placeholder */}
             <div className="glass-card p-6 text-center border-dashed">
               <Zap className="w-8 h-8 text-primary mx-auto mb-3" />
-              <h3 className="font-semibold mb-1">CPX Research Offerwall</h3>
-              <p className="text-xs text-muted-foreground mb-3">External offerwall loads here via secure API integration</p>
+              <h3 className="font-semibold mb-1">{t("dash.offerwallTitle")}</h3>
+              <p className="text-xs text-muted-foreground mb-3">{t("dash.offerwallDesc")}</p>
               <Button variant="outline" size="sm" className="border-primary/30 text-primary hover:bg-primary/10">
-                <ExternalLink className="w-3.5 h-3.5 mr-1.5" /> Open Full Offerwall
+                <ExternalLink className="w-3.5 h-3.5 me-1.5" /> {t("dash.openOfferwall")}
               </Button>
             </div>
           </div>
@@ -154,18 +156,18 @@ export default function Dashboard() {
               <div className="relative">
                 <div className="flex items-center gap-2 mb-3">
                   <Star className="w-5 h-5 text-primary" />
-                  <span className="font-heading font-semibold">VIP Membership</span>
+                  <span className="font-heading font-semibold">{t("dash.vipTitle")}</span>
                 </div>
-                <p className="text-xs text-muted-foreground mb-4">Unlock +10% earnings boost & priority withdrawals</p>
+                <p className="text-xs text-muted-foreground mb-4">{t("dash.vipDesc")}</p>
                 <div className="mb-4">
                   <div className="flex justify-between text-xs mb-1">
-                    <span className="text-muted-foreground">Monthly progress</span>
+                    <span className="text-muted-foreground">{t("dash.monthlyProgress")}</span>
                     <span className="text-primary font-medium">$3.20 / $5.00</span>
                   </div>
                   <Progress value={64} className="h-1.5" />
                 </div>
                 <Button className="w-full bg-gradient-gold text-primary-foreground font-semibold text-sm shadow-gold hover:opacity-90">
-                  Upgrade for $5/mo
+                  {t("dash.upgradeVip")}
                 </Button>
               </div>
             </div>
@@ -174,7 +176,7 @@ export default function Dashboard() {
             <div className="glass-card p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Users className="w-5 h-5 text-info" />
-                <span className="font-heading font-semibold">Referral Link</span>
+                <span className="font-heading font-semibold">{t("dash.referralLink")}</span>
               </div>
               <div className="bg-surface rounded-lg p-3 text-xs font-mono text-muted-foreground mb-3 truncate">
                 zaincash.pro/ref/{referralCode.toLowerCase()}
@@ -185,16 +187,16 @@ export default function Dashboard() {
                 className="w-full border-border hover:border-primary/30 hover:bg-primary/5 text-sm gap-2"
               >
                 {copied ? <CheckCircle className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
-                {copied ? "Copied!" : "Copy Link"}
+                {copied ? t("dash.copied") : t("dash.copyLink")}
               </Button>
               <div className="grid grid-cols-2 gap-2 mt-3">
                 <div className="bg-surface rounded-lg p-2 text-center">
                   <div className="font-heading font-bold text-lg text-primary">12</div>
-                  <div className="text-xs text-muted-foreground">L1 Refs</div>
+                  <div className="text-xs text-muted-foreground">{t("dash.l1refs")}</div>
                 </div>
                 <div className="bg-surface rounded-lg p-2 text-center">
                   <div className="font-heading font-bold text-lg text-info">$18.40</div>
-                  <div className="text-xs text-muted-foreground">Ref Earnings</div>
+                  <div className="text-xs text-muted-foreground">{t("dash.refEarnings")}</div>
                 </div>
               </div>
             </div>
@@ -202,9 +204,9 @@ export default function Dashboard() {
             {/* Recent Tasks */}
             <div className="glass-card p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="font-heading font-semibold">Recent Activity</span>
+                <span className="font-heading font-semibold">{t("dash.recentActivity")}</span>
                 <Button variant="ghost" size="sm" className="text-xs text-primary p-0 h-auto gap-1">
-                  All <ChevronRight className="w-3 h-3" />
+                  {t("dash.viewAll")} <ChevronRight className="w-3 h-3" />
                 </Button>
               </div>
               <div className="space-y-3">
@@ -229,8 +231,8 @@ export default function Dashboard() {
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="font-heading font-semibold">Achievements</h2>
-              <p className="text-xs text-muted-foreground mt-0.5">4 of 6 badges unlocked</p>
+              <h2 className="font-heading font-semibold">{t("dash.achievements")}</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">{t("dash.badgesUnlocked")}</p>
             </div>
             <Progress value={66} className="w-24 h-1.5" />
           </div>
@@ -257,12 +259,14 @@ export default function Dashboard() {
           <div className="absolute inset-0 bg-gradient-to-r from-success/10 to-transparent" />
           <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h3 className="font-heading font-semibold text-lg mb-1">Ready to Withdraw?</h3>
-              <p className="text-sm text-muted-foreground">You have <span className="text-success font-semibold">$47.82</span> available. Min. withdrawal is $10.</p>
+              <h3 className="font-heading font-semibold text-lg mb-1">{t("dash.readyWithdraw")}</h3>
+              <p className="text-sm text-muted-foreground">
+                <span className="text-success font-semibold">$47.82</span> {t("dash.withdrawDesc")}
+              </p>
             </div>
             <Button className="bg-gradient-green text-success-foreground font-semibold shadow-green hover:opacity-90 shrink-0">
-              <Wallet className="w-4 h-4 mr-2" style={{ color: "inherit" }} />
-              Withdraw Now
+              <Wallet className="w-4 h-4 me-2" style={{ color: "inherit" }} />
+              {t("dash.withdrawNow")}
             </Button>
           </div>
         </div>
