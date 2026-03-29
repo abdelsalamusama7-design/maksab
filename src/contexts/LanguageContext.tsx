@@ -75,7 +75,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "trust.verified": { ar: "مدفوعات موثقة", en: "Verified Payments" },
 
   // FOOTER
-  "footer.rights": { ar: "© 2025 ZainCash Pro. جميع الحقوق محفوظة.", en: "© 2025 ZainCash Pro. All rights reserved." },
+  "footer.rights": { ar: "© 2025 Maksab. جميع الحقوق محفوظة.", en: "© 2025 Maksab. All rights reserved." },
   "footer.privacy": { ar: "الخصوصية", en: "Privacy" },
   "footer.terms": { ar: "الشروط", en: "Terms" },
   "footer.support": { ar: "الدعم", en: "Support" },
@@ -317,7 +317,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "ref.thisMonth": { ar: "أرباح هذا الشهر", en: "This Month" },
   "ref.yourLink": { ar: "رابط الإحالة الخاص بك", en: "Your Referral Link" },
   "ref.shareVia": { ar: "شارك عبر:", en: "Share via:" },
-  "ref.shareText": { ar: "انضم لمنصة ZainCash Pro واكسب أموالاً حقيقية من هاتفك! سجل من هنا:", en: "Join ZainCash Pro and earn real money from your phone! Register here:" },
+  "ref.shareText": { ar: "انضم لمنصة Maksab واكسب أموالاً حقيقية من هاتفك! سجل من هنا:", en: "Join Maksab and earn real money from your phone! Register here:" },
   "ref.level1": { ar: "المستوى 1", en: "Level 1" },
   "ref.level2": { ar: "المستوى 2", en: "Level 2" },
   "ref.referral": { ar: "إحالة", en: "referrals" },

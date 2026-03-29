@@ -55,7 +55,7 @@ export default function Landing() {
             <div className="w-8 h-8 rounded-lg bg-gradient-gold flex items-center justify-center">
               <Zap className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-heading font-bold text-xl gold-text">ZainCash Pro</span>
+            <span className="font-heading font-bold text-xl gold-text">Maksab</span>
           </div>
           <div className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
             <a href="#features" className="hover:text-foreground transition-colors">{t("nav.features")}</a>
@@ -213,7 +213,7 @@ export default function Landing() {
             <div className="w-6 h-6 rounded bg-gradient-gold flex items-center justify-center">
               <Zap className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
-            <span className="font-semibold text-foreground">ZainCash Pro</span>
+            <span className="font-semibold text-foreground">Maksab</span>
           </div>
           <span>{t("footer.rights")}</span>
           <div className="flex gap-4">
