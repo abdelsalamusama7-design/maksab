@@ -14,7 +14,7 @@ import { useState } from "react";
 export default function Dashboard() {
   const { t } = useLang();
   const [copied, setCopied] = useState(false);
-  const referralCode = "ZAINCASH-AHMED2025";
+  const referralCode = "MAKSAB-AHMED2025";
 
   const balanceCards = [
     { label: t("dash.balance"), value: 47.82, prefix: "$", color: "text-success", icon: DollarSign, glow: "shadow-green", gradient: "from-success/10 to-transparent", badge: t("dash.withdrawable") },
@@ -50,7 +50,7 @@ export default function Dashboard() {
   ];
 
   const copyReferral = () => {
-    navigator.clipboard.writeText(`https://zaincash.pro/ref/${referralCode}`);
+    navigator.clipboard.writeText(`https://maksab.lovable.app/ref/${referralCode}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -179,7 +179,7 @@ export default function Dashboard() {
                 <span className="font-heading font-semibold">{t("dash.referralLink")}</span>
               </div>
               <div className="bg-surface rounded-lg p-3 text-xs font-mono text-muted-foreground mb-3 truncate">
-                zaincash.pro/ref/{referralCode.toLowerCase()}
+                maksab.lovable.app/ref/{referralCode.toLowerCase()}
               </div>
               <Button
                 onClick={copyReferral}

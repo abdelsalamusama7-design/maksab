@@ -36,7 +36,7 @@ export default function AdminLayout({ children, currentPath = "/admin" }: AdminL
             <Zap className="w-4 h-4 text-primary-foreground" />
           </div>
           <div>
-            <span className="font-heading font-bold text-base gold-text block">ZainCash Pro</span>
+            <span className="font-heading font-bold text-base gold-text block">Maksab</span>
             <span className="text-xs text-destructive font-semibold">{t("layout.adminPanel")}</span>
           </div>
         </Link>

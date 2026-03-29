@@ -32,7 +32,7 @@ export default function Login() {
             <div className="w-9 h-9 rounded-xl bg-gradient-gold flex items-center justify-center shadow-gold">
               <Zap className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-heading font-bold text-xl gold-text">ZainCash Pro</span>
+            <span className="font-heading font-bold text-xl gold-text">Maksab</span>
           </Link>
 
           <div className="mb-auto">
@@ -76,7 +76,7 @@ export default function Login() {
               <div className="w-8 h-8 rounded-lg bg-gradient-gold flex items-center justify-center">
                 <Zap className="w-4 h-4 text-primary-foreground" />
               </div>
-              <span className="font-heading font-bold text-lg gold-text">ZainCash Pro</span>
+              <span className="font-heading font-bold text-lg gold-text">Maksab</span>
             </Link>
             <LanguageToggle />
           </div>

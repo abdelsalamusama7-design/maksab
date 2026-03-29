@@ -24,8 +24,8 @@ export default function Referrals() {
   const { t } = useLang();
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"l1" | "l2">("l1");
-  const referralCode = "ZAINCASH-AHMED2025";
-  const referralLink = `https://zaincash.pro/ref/${referralCode.toLowerCase()}`;
+  const referralCode = "MAKSAB-AHMED2025";
+  const referralLink = `https://maksab.lovable.app/ref/${referralCode.toLowerCase()}`;
 
   const stats = {
     totalReferrals: 12,
