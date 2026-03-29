@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Zap, ListChecks, Users, Wallet, Star,
   Trophy, LogOut, ChevronRight, Bell, Menu, X, Settings,
@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import LanguageToggle from "@/components/ui/LanguageToggle";
 import { useLang } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -16,7 +17,18 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useLang();
+  const { profile, signOut } = useAuth();
+
+  const displayName = profile?.full_name || "User";
+  const displayEmail = profile?.email || "";
+  const initials = displayName.charAt(0).toUpperCase();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/login");
+  };
 
   const navItems = [
     { icon: LayoutDashboard, label: t("layout.dashboard"), path: "/dashboard" },
@@ -45,13 +57,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="p-4">
         <div className="glass-card p-3 flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gradient-gold flex items-center justify-center font-bold text-primary-foreground shadow-gold">
-            A
+            {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="font-semibold text-sm truncate">Ahmed Mohamed</div>
-            <div className="text-xs text-muted-foreground truncate">ahmed@example.com</div>
+            <div className="font-semibold text-sm truncate">{displayName}</div>
+            <div className="text-xs text-muted-foreground truncate">{displayEmail}</div>
           </div>
-          <span className="badge-gold text-xs">VIP</span>
+          {profile?.is_vip && <span className="badge-gold text-xs">VIP</span>}
         </div>
       </div>
 
@@ -84,9 +96,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <Link to="/admin" className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-colors">
           <ShieldCheck className="w-4 h-4" /> {t("layout.adminPanel")}
         </Link>
-        <Link to="/login" className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-destructive hover:bg-destructive-dim transition-colors">
+        <button onClick={handleSignOut} className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-destructive hover:bg-destructive-dim transition-colors w-full">
           <LogOut className="w-4 h-4" /> {t("layout.signOut")}
-        </Link>
+        </button>
       </div>
     </div>
   );

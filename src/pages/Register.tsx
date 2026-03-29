@@ -1,22 +1,33 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import LanguageToggle from "@/components/ui/LanguageToggle";
 import { useLang } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Eye, EyeOff, Zap, Lock, Mail, User, Gift, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
 
 export default function Register() {
   const { t } = useLang();
+  const { signUp } = useAuth();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", password: "", referral: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => { setLoading(false); window.location.href = "/dashboard"; }, 1500);
+    const { error } = await signUp(form.email, form.password, form.name, form.referral);
+    setLoading(false);
+    if (error) {
+      toast.error(error);
+    } else {
+      toast.success(t("reg.successMsg") || "Account created successfully!");
+      navigate("/dashboard");
+    }
   };
 
   return (
