@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Zap, ListChecks, Users, Wallet, Star,
   Trophy, LogOut, ChevronRight, Bell, Menu, X, Settings,
@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import LanguageToggle from "@/components/ui/LanguageToggle";
 import { useLang } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
