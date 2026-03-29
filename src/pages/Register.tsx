@@ -10,8 +10,6 @@ import { Eye, EyeOff, Zap, Lock, Mail, User, Gift, ArrowRight } from "lucide-rea
 export default function Register() {
   const { t } = useLang();
   const [showPassword, setShowPassword] = useState(false);
-  const [step, setStep] = useState<"form" | "otp">("form");
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", password: "", referral: "" });
 
