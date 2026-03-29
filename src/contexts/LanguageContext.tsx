@@ -307,6 +307,26 @@ const translations: Record<string, Record<Lang, string>> = {
   "wd.method": { ar: "الطريقة", en: "Method" },
   "wd.status": { ar: "الحالة", en: "Status" },
   "wd.newRequest": { ar: "طلب سحب جديد", en: "New Withdrawal Request" },
+
+  // REFERRALS
+  "ref.title": { ar: "نظام الإحالات", en: "Referral System" },
+  "ref.subtitle": { ar: "ادعُ أصدقاءك واكسب عمولات مدى الحياة من أرباحهم", en: "Invite friends and earn lifetime commissions from their earnings" },
+  "ref.totalReferrals": { ar: "إجمالي الإحالات", en: "Total Referrals" },
+  "ref.totalEarnings": { ar: "إجمالي أرباح الإحالة", en: "Total Referral Earnings" },
+  "ref.l1Earnings": { ar: "أرباح المستوى 1", en: "Level 1 Earnings" },
+  "ref.thisMonth": { ar: "أرباح هذا الشهر", en: "This Month" },
+  "ref.yourLink": { ar: "رابط الإحالة الخاص بك", en: "Your Referral Link" },
+  "ref.shareVia": { ar: "شارك عبر:", en: "Share via:" },
+  "ref.shareText": { ar: "انضم لمنصة ZainCash Pro واكسب أموالاً حقيقية من هاتفك! سجل من هنا:", en: "Join ZainCash Pro and earn real money from your phone! Register here:" },
+  "ref.level1": { ar: "المستوى 1", en: "Level 1" },
+  "ref.level2": { ar: "المستوى 2", en: "Level 2" },
+  "ref.referral": { ar: "إحالة", en: "referrals" },
+  "ref.earned": { ar: "الأرباح", en: "Earned" },
+  "ref.tree": { ar: "شجرة الإحالات", en: "Referral Tree" },
+  "ref.commission": { ar: "نسبة العمولة", en: "Commission rate" },
+  "ref.lifetime": { ar: "مدى الحياة", en: "lifetime" },
+  "ref.joined": { ar: "انضم", en: "Joined" },
+  "ref.subRefs": { ar: "إحالات فرعية", en: "sub-referrals" },
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
