@@ -57,13 +57,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="p-4">
         <div className="glass-card p-3 flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gradient-gold flex items-center justify-center font-bold text-primary-foreground shadow-gold">
-            A
+            {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="font-semibold text-sm truncate">Ahmed Mohamed</div>
-            <div className="text-xs text-muted-foreground truncate">ahmed@example.com</div>
+            <div className="font-semibold text-sm truncate">{displayName}</div>
+            <div className="text-xs text-muted-foreground truncate">{displayEmail}</div>
           </div>
-          <span className="badge-gold text-xs">VIP</span>
+          {profile?.is_vip && <span className="badge-gold text-xs">VIP</span>}
         </div>
       </div>
 
