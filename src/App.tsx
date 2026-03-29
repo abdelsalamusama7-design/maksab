@@ -28,6 +28,7 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dashboard/withdraw" element={<Withdraw />} />
+            <Route path="/dashboard/referrals" element={<Referrals />} />
             <Route path="/dashboard/*" element={<Dashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/*" element={<AdminDashboard />} />
