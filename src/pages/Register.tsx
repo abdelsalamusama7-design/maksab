@@ -16,89 +16,8 @@ export default function Register() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => { setLoading(false); setStep("otp"); }, 1500);
-  };
-
-  const handleOtpChange = (index: number, value: string) => {
-    if (value.length > 1) return;
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-    if (value && index < 5) {
-      document.getElementById(`otp-${index + 1}`)?.focus();
-    }
-  };
-
-  const handleOtpVerify = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
     setTimeout(() => { setLoading(false); window.location.href = "/dashboard"; }, 1500);
   };
-
-  if (step === "otp") {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-6">
-        <div className="w-full max-w-md">
-          <div className="flex items-center justify-between mb-10">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-gold flex items-center justify-center">
-                <Zap className="w-4 h-4 text-primary-foreground" />
-              </div>
-              <span className="font-heading font-bold text-lg gold-text">Maksab</span>
-            </Link>
-            <LanguageToggle />
-          </div>
-
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              <Mail className="w-8 h-8 text-primary" />
-            </div>
-            <h1 className="font-heading font-bold text-3xl mb-2">{t("otp.title")}</h1>
-            <p className="text-muted-foreground">{t("otp.subtitle")} <span className="text-foreground font-medium">{form.email}</span></p>
-          </div>
-
-          <form onSubmit={handleOtpVerify} className="space-y-6">
-            <div>
-              <Label className="text-sm font-medium mb-3 block text-center">{t("otp.label")}</Label>
-              <div className="flex justify-center gap-3">
-                {otp.map((digit, i) => (
-                  <input
-                    key={i}
-                    id={`otp-${i}`}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleOtpChange(i, e.target.value)}
-                    className="w-12 h-14 text-center text-xl font-bold rounded-xl border bg-surface text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
-                    style={{ borderColor: digit ? "hsl(var(--primary))" : "hsl(var(--border))" }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <Button
-              type="submit"
-              disabled={loading || otp.some(d => !d)}
-              className="w-full h-12 bg-gradient-gold text-primary-foreground font-semibold shadow-gold hover:opacity-90 disabled:opacity-60"
-            >
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground animate-spin" />
-                  {t("otp.verifying")}
-                </div>
-              ) : t("otp.verify")}
-            </Button>
-          </form>
-
-          <p className="text-center text-sm text-muted-foreground mt-4">
-            {t("otp.noCode")}{" "}
-            <button className="text-primary hover:underline font-medium">{t("otp.resend")}</button>
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background flex">
