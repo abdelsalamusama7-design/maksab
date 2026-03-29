@@ -17,7 +17,18 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useLang();
+  const { profile, signOut } = useAuth();
+
+  const displayName = profile?.full_name || "User";
+  const displayEmail = profile?.email || "";
+  const initials = displayName.charAt(0).toUpperCase();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/login");
+  };
 
   const navItems = [
     { icon: LayoutDashboard, label: t("layout.dashboard"), path: "/dashboard" },
