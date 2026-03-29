@@ -96,9 +96,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <Link to="/admin" className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-colors">
           <ShieldCheck className="w-4 h-4" /> {t("layout.adminPanel")}
         </Link>
-        <Link to="/login" className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-destructive hover:bg-destructive-dim transition-colors">
+        <button onClick={handleSignOut} className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-destructive hover:bg-destructive-dim transition-colors w-full">
           <LogOut className="w-4 h-4" /> {t("layout.signOut")}
-        </Link>
+        </button>
       </div>
     </div>
   );
