@@ -148,6 +148,30 @@ export type Database = {
         }
         Relationships: []
       }
+      video_watches: {
+        Row: {
+          created_at: string
+          id: string
+          points_earned: number
+          user_id: string
+          video_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          points_earned?: number
+          user_id: string
+          video_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          points_earned?: number
+          user_id?: string
+          video_id?: string
+        }
+        Relationships: []
+      }
       withdrawals: {
         Row: {
           address: string
