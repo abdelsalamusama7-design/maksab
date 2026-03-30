@@ -1,70 +1,103 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useLang } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Users, Copy, CheckCircle, Share2, ChevronRight,
   TrendingUp, Award, Link2, UserPlus, DollarSign,
   MessageCircle, Send, Globe
 } from "lucide-react";
 
-interface Referral {
+interface ReferralWithProfile {
+  id: string;
+  referred_id: string;
+  level: number;
+  commission_earned: number;
+  created_at: string;
+  // joined profile data
   name: string;
-  email: string;
-  date: string;
-  earnings: number;
-  status: "active" | "inactive";
   avatar: string;
-  subRefs?: number;
+  status: "active" | "inactive";
 }
 
 export default function Referrals() {
   const { t } = useLang();
+  const { profile, user } = useAuth();
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"l1" | "l2">("l1");
-  const referralCode = "MAKSAB-AHMED2025";
+  const [referrals, setReferrals] = useState<ReferralWithProfile[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const referralCode = profile?.referral_code || "MKSB-XXXXXXXX";
   const referralLink = `https://maksab.lovable.app/ref/${referralCode.toLowerCase()}`;
 
+  useEffect(() => {
+    if (!user) return;
+    const fetchReferrals = async () => {
+      setLoading(true);
+      const { data: refs } = await supabase
+        .from("referrals")
+        .select("*")
+        .eq("referrer_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (!refs || refs.length === 0) {
+        setReferrals([]);
+        setLoading(false);
+        return;
+      }
+
+      // Get profile info for each referred user
+      const referredIds = refs.map(r => r.referred_id);
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, created_at")
+        .in("user_id", referredIds);
+
+      const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
+
+      const enriched: ReferralWithProfile[] = refs.map(r => {
+        const p = profileMap.get(r.referred_id);
+        const name = p?.full_name || "User";
+        return {
+          id: r.id,
+          referred_id: r.referred_id,
+          level: r.level,
+          commission_earned: Number(r.commission_earned),
+          created_at: r.created_at,
+          name,
+          avatar: name.charAt(0),
+          status: "active" as const,
+        };
+      });
+
+      setReferrals(enriched);
+      setLoading(false);
+    };
+    fetchReferrals();
+  }, [user]);
+
+  const l1Referrals = referrals.filter(r => r.level === 1);
+  const l2Referrals = referrals.filter(r => r.level === 2);
+  const l1Earnings = l1Referrals.reduce((s, r) => s + r.commission_earned, 0);
+  const l2Earnings = l2Referrals.reduce((s, r) => s + r.commission_earned, 0);
+  const totalEarnings = l1Earnings + l2Earnings;
+
   const stats = {
-    totalReferrals: 12,
-    l1Count: 8,
-    l2Count: 14,
-    totalEarnings: 86.40,
-    l1Earnings: 72.30,
-    l2Earnings: 14.10,
-    pendingEarnings: 5.20,
-    thisMonth: 18.60,
+    totalReferrals: referrals.length,
+    l1Count: l1Referrals.length,
+    l2Count: l2Referrals.length,
+    totalEarnings,
+    l1Earnings,
+    l2Earnings,
   };
 
-  const l1Referrals: Referral[] = [
-    { name: "محمد علي", email: "m.ali@email.com", date: "2025-01-10", earnings: 14.20, status: "active", avatar: "م", subRefs: 3 },
-    { name: "فاطمة أحمد", email: "f.ahmed@email.com", date: "2025-01-08", earnings: 11.50, status: "active", avatar: "ف", subRefs: 2 },
-    { name: "عمر حسن", email: "o.hassan@email.com", date: "2024-12-28", earnings: 18.90, status: "active", avatar: "ع", subRefs: 4 },
-    { name: "سارة محمود", email: "s.mahmoud@email.com", date: "2024-12-15", earnings: 8.40, status: "active", avatar: "س", subRefs: 1 },
-    { name: "يوسف خالد", email: "y.khaled@email.com", date: "2024-12-01", earnings: 6.70, status: "inactive", avatar: "ي", subRefs: 2 },
-    { name: "نور الدين", email: "n.din@email.com", date: "2024-11-20", earnings: 5.30, status: "active", avatar: "ن", subRefs: 1 },
-    { name: "هدى سمير", email: "h.samir@email.com", date: "2024-11-10", earnings: 4.80, status: "inactive", avatar: "ه", subRefs: 0 },
-    { name: "كريم وليد", email: "k.walid@email.com", date: "2024-10-25", earnings: 2.50, status: "active", avatar: "ك", subRefs: 1 },
-  ];
-
-  const l2Referrals: Referral[] = [
-    { name: "أحمد رضا", email: "a.reda@email.com", date: "2025-01-12", earnings: 1.80, status: "active", avatar: "أ" },
-    { name: "ليلى فوزي", email: "l.fawzy@email.com", date: "2025-01-05", earnings: 1.50, status: "active", avatar: "ل" },
-    { name: "طارق مصطفى", email: "t.mostafa@email.com", date: "2024-12-30", earnings: 2.10, status: "active", avatar: "ط" },
-    { name: "منى سيد", email: "m.sayed@email.com", date: "2024-12-22", earnings: 0.90, status: "inactive", avatar: "م" },
-    { name: "حسام جمال", email: "h.gamal@email.com", date: "2024-12-18", earnings: 1.40, status: "active", avatar: "ح" },
-    { name: "رنا عادل", email: "r.adel@email.com", date: "2024-12-10", earnings: 1.20, status: "active", avatar: "ر" },
-    { name: "إبراهيم علاء", email: "i.alaa@email.com", date: "2024-12-05", earnings: 0.80, status: "inactive", avatar: "إ" },
-    { name: "دينا حسين", email: "d.hussein@email.com", date: "2024-11-28", earnings: 1.60, status: "active", avatar: "د" },
-    { name: "وائل أشرف", email: "w.ashraf@email.com", date: "2024-11-20", earnings: 0.70, status: "active", avatar: "و" },
-    { name: "مريم طلعت", email: "m.talaat@email.com", date: "2024-11-15", earnings: 0.60, status: "inactive", avatar: "م" },
-    { name: "خالد نبيل", email: "k.nabil@email.com", date: "2024-11-08", earnings: 0.50, status: "active", avatar: "خ" },
-    { name: "ياسمين صلاح", email: "y.salah@email.com", date: "2024-10-30", earnings: 0.40, status: "inactive", avatar: "ي" },
-    { name: "عمرو بكر", email: "a.bakr@email.com", date: "2024-10-25", earnings: 0.30, status: "active", avatar: "ع" },
-    { name: "هبة فؤاد", email: "h.fouad@email.com", date: "2024-10-18", earnings: 0.20, status: "inactive", avatar: "ه" },
-  ];
+  const currentReferrals = activeTab === "l1" ? l1Referrals : l2Referrals;
+  const commissionRate = activeTab === "l1" ? "10%" : "3%";
 
   const copyLink = () => {
     navigator.clipboard.writeText(referralLink);
@@ -77,9 +110,6 @@ export default function Referrals() {
     { icon: Send, label: "Telegram", color: "text-info", url: `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(t("ref.shareText"))}` },
     { icon: Globe, label: "Facebook", color: "text-primary", url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}` },
   ];
-
-  const currentReferrals = activeTab === "l1" ? l1Referrals : l2Referrals;
-  const commissionRate = activeTab === "l1" ? "10%" : "3%";
 
   return (
     <DashboardLayout>
@@ -99,7 +129,7 @@ export default function Referrals() {
             { label: t("ref.totalReferrals"), value: stats.totalReferrals, icon: UserPlus, color: "text-primary", gradient: "from-primary/10" },
             { label: t("ref.totalEarnings"), value: `$${stats.totalEarnings.toFixed(2)}`, icon: DollarSign, color: "text-success", gradient: "from-success/10" },
             { label: t("ref.l1Earnings"), value: `$${stats.l1Earnings.toFixed(2)}`, icon: TrendingUp, color: "text-info", gradient: "from-info/10" },
-            { label: t("ref.thisMonth"), value: `$${stats.thisMonth.toFixed(2)}`, icon: Award, color: "text-warning", gradient: "from-warning/10" },
+            { label: t("ref.thisMonth"), value: `$${stats.l2Earnings.toFixed(2)}`, icon: Award, color: "text-warning", gradient: "from-warning/10" },
           ].map((s) => (
             <div key={s.label} className="glass-card p-5 relative overflow-hidden">
               <div className={`absolute inset-0 bg-gradient-to-br ${s.gradient} to-transparent opacity-40`} />
@@ -165,7 +195,7 @@ export default function Referrals() {
               </div>
               <div className="font-heading font-bold text-2xl text-info mb-1">{stats.l1Count} {t("ref.referral")}</div>
               <div className="text-sm text-muted-foreground">{t("ref.earned")}: <span className="text-info font-semibold">${stats.l1Earnings.toFixed(2)}</span></div>
-              <Progress value={75} className="h-1.5 mt-3" />
+              <Progress value={stats.l1Count > 0 ? Math.min(stats.l1Count * 10, 100) : 0} className="h-1.5 mt-3" />
             </div>
           </div>
           <div className="glass-card p-5 border-warning/20 relative overflow-hidden">
@@ -177,7 +207,7 @@ export default function Referrals() {
               </div>
               <div className="font-heading font-bold text-2xl text-warning mb-1">{stats.l2Count} {t("ref.referral")}</div>
               <div className="text-sm text-muted-foreground">{t("ref.earned")}: <span className="text-warning font-semibold">${stats.l2Earnings.toFixed(2)}</span></div>
-              <Progress value={45} className="h-1.5 mt-3" />
+              <Progress value={stats.l2Count > 0 ? Math.min(stats.l2Count * 10, 100) : 0} className="h-1.5 mt-3" />
             </div>
           </div>
         </div>
@@ -211,36 +241,43 @@ export default function Referrals() {
             {t("ref.commission")}: <span className="text-primary font-semibold">{commissionRate}</span> {t("ref.lifetime")}
           </div>
 
-          <div className="space-y-3">
-            {currentReferrals.map((ref, i) => (
-              <div key={ref.email} className="flex items-center gap-4 p-4 rounded-xl bg-surface border border-border hover:border-primary/20 transition-colors">
-                <div className="w-10 h-10 rounded-full bg-gradient-gold flex items-center justify-center font-bold text-primary-foreground text-sm shadow-gold shrink-0">
-                  {ref.avatar}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-sm truncate">{ref.name}</span>
-                    <Badge
-                      variant="outline"
-                      className={`text-xs ${ref.status === "active" ? "border-success/30 text-success" : "border-border text-muted-foreground"}`}
-                    >
-                      {t(`status.${ref.status}`)}
-                    </Badge>
+          {currentReferrals.length === 0 ? (
+            <div className="text-center py-8">
+              <Users className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-40" />
+              <p className="text-sm text-muted-foreground">
+                {activeTab === "l1" ? "No direct referrals yet" : "No level 2 referrals yet"}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">Share your link to start earning!</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {currentReferrals.map((ref) => (
+                <div key={ref.id} className="flex items-center gap-4 p-4 rounded-xl bg-surface border border-border hover:border-primary/20 transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-gradient-gold flex items-center justify-center font-bold text-primary-foreground text-sm shadow-gold shrink-0">
+                    {ref.avatar}
                   </div>
-                  <div className="text-xs text-muted-foreground mt-0.5">
-                    {t("ref.joined")}: {ref.date}
-                    {ref.subRefs !== undefined && ref.subRefs > 0 && (
-                      <span className="ms-2 text-info">· {ref.subRefs} {t("ref.subRefs")}</span>
-                    )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-sm truncate">{ref.name}</span>
+                      <Badge
+                        variant="outline"
+                        className="text-xs border-success/30 text-success"
+                      >
+                        {t("status.active")}
+                      </Badge>
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      {t("ref.joined")}: {new Date(ref.created_at).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <div className="text-end shrink-0">
+                    <div className="font-heading font-bold text-success text-sm">${ref.commission_earned.toFixed(2)}</div>
+                    <div className="text-xs text-muted-foreground">{t("ref.earned")}</div>
                   </div>
                 </div>
-                <div className="text-end shrink-0">
-                  <div className="font-heading font-bold text-success text-sm">${ref.earnings.toFixed(2)}</div>
-                  <div className="text-xs text-muted-foreground">{t("ref.earned")}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>
