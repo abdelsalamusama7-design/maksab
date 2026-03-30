@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { useLang } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
   Wallet, AlertCircle, CheckCircle, Clock, ChevronRight,
   ArrowDownCircle, Shield, Info
@@ -13,25 +16,29 @@ import {
 
 type Method = "usdt" | "vodafone" | "instapay" | "visa" | "crypto";
 
-interface WithdrawalHistory {
-  id: string;
-  amount: number;
-  method: string;
-  status: "pending" | "approved" | "rejected";
-  date: string;
-  address: string;
-}
-
 export default function Withdraw() {
   const { t } = useLang();
+  const { profile, user, refreshProfile } = useAuth();
   const [method, setMethod] = useState<Method>("usdt");
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [history, setHistory] = useState<any[]>([]);
 
-  const balance = 47.82;
-  // Simulated: 0 = first, 1 = second, 2+ = third+
-  const withdrawalCount = 0;
+  const balance = Number(profile?.balance || 0);
+  const withdrawalCount = profile?.withdrawal_count || 0;
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("withdrawals")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(10)
+      .then(({ data }) => setHistory(data || []));
+  }, [user, submitted]);
 
   const getMinWithdrawal = () => {
     if (withdrawalCount === 0) return 1;
@@ -72,13 +79,7 @@ export default function Withdraw() {
   const parsedAmount = parseFloat(amount) || 0;
   const isValidAmount = parsedAmount >= minAmount && parsedAmount <= balance;
   const isValidAddress = address.trim().length >= 5;
-  const canSubmit = isValidAmount && isValidAddress;
-
-  const history: WithdrawalHistory[] = [
-    { id: "WD-001", amount: 15.00, method: "USDT TRC20", status: "approved", date: "2025-01-15", address: "TXk...9f2" },
-    { id: "WD-002", amount: 10.00, method: "Vodafone Cash", status: "pending", date: "2025-01-18", address: "010****890" },
-    { id: "WD-003", amount: 20.00, method: "InstaPay", status: "rejected", date: "2025-01-10", address: "ahmed@instapay" },
-  ];
+  const canSubmit = isValidAmount && isValidAddress && !submitting;
 
   const statusColor = (s: string) => {
     if (s === "approved") return "text-success";
@@ -92,9 +93,35 @@ export default function Withdraw() {
     return <AlertCircle className="w-4 h-4 text-destructive" />;
   };
 
-  const handleSubmit = () => {
-    if (!canSubmit) return;
-    setSubmitted(true);
+  const handleSubmit = async () => {
+    if (!canSubmit || !user) return;
+    setSubmitting(true);
+    try {
+      const { error } = await supabase.from("withdrawals").insert({
+        user_id: user.id,
+        amount: parsedAmount,
+        method: methods.find(m => m.value === method)?.label || method,
+        address: address.trim(),
+      });
+      if (error) throw error;
+
+      // Also insert a transaction record
+      await supabase.from("transactions").insert({
+        user_id: user.id,
+        amount: -parsedAmount,
+        type: "withdrawal",
+        description: `Withdrawal via ${method}`,
+        status: "pending",
+      });
+
+      await refreshProfile();
+      setSubmitted(true);
+      toast.success(t("wd.successTitle"));
+    } catch (err: any) {
+      toast.error(err.message || "Failed to submit withdrawal");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -265,7 +292,7 @@ export default function Withdraw() {
                 className="w-full bg-gradient-gold text-primary-foreground font-semibold shadow-gold hover:opacity-90 disabled:opacity-50 h-12 text-base"
               >
                 <ArrowDownCircle className="w-5 h-5 me-2" />
-                {t("wd.submitRequest")}
+                {submitting ? "..." : t("wd.submitRequest")}
               </Button>
 
               <div className="flex items-center gap-2 text-xs text-muted-foreground justify-center">
@@ -279,31 +306,35 @@ export default function Withdraw() {
           <div className="lg:col-span-2">
             <div className="glass-card p-5">
               <h3 className="font-heading font-semibold mb-4">{t("wd.history")}</h3>
-              <div className="space-y-3">
-                {history.map((h) => (
-                  <div key={h.id} className="p-3 rounded-xl bg-surface border border-border">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-mono text-xs text-muted-foreground">{h.id}</span>
-                      <div className="flex items-center gap-1.5">
-                        {statusIcon(h.status)}
-                        <span className={`text-xs font-medium ${statusColor(h.status)}`}>
-                          {t(`status.${h.status}`)}
-                        </span>
+              {history.length === 0 ? (
+                <p className="text-xs text-muted-foreground text-center py-4">No withdrawals yet</p>
+              ) : (
+                <div className="space-y-3">
+                  {history.map((h) => (
+                    <div key={h.id} className="p-3 rounded-xl bg-surface border border-border">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-mono text-xs text-muted-foreground">{h.id.slice(0, 8)}</span>
+                        <div className="flex items-center gap-1.5">
+                          {statusIcon(h.status)}
+                          <span className={`text-xs font-medium ${statusColor(h.status)}`}>
+                            {t(`status.${h.status}`)}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="font-heading font-bold text-success">${Number(h.amount).toFixed(2)}</div>
+                          <div className="text-xs text-muted-foreground">{h.method}</div>
+                        </div>
+                        <div className="text-end">
+                          <div className="text-xs text-muted-foreground">{new Date(h.created_at).toLocaleDateString()}</div>
+                          <div className="text-xs font-mono text-muted-foreground truncate max-w-[120px]">{h.address}</div>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="font-heading font-bold text-success">${h.amount.toFixed(2)}</div>
-                        <div className="text-xs text-muted-foreground">{h.method}</div>
-                      </div>
-                      <div className="text-end">
-                        <div className="text-xs text-muted-foreground">{h.date}</div>
-                        <div className="text-xs font-mono text-muted-foreground">{h.address}</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
