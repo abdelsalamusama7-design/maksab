@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Withdraw from "./pages/Withdraw";
 import Referrals from "./pages/Referrals";
+import WatchEarn from "./pages/WatchEarn";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
