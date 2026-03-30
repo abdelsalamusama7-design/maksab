@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Zap, ListChecks, Users, Wallet, Star,
   Trophy, LogOut, ChevronRight, Bell, Menu, X, Settings,
-  ShieldCheck
+  ShieldCheck, Eye
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LanguageToggle from "@/components/ui/LanguageToggle";
@@ -32,6 +32,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const navItems = [
     { icon: LayoutDashboard, label: t("layout.dashboard"), path: "/dashboard" },
+    { icon: Eye, label: t("layout.watchEarn"), path: "/dashboard/watch" },
     { icon: Zap, label: t("layout.offerwall"), path: "/dashboard/offers" },
     { icon: ListChecks, label: t("layout.taskHistory"), path: "/dashboard/tasks" },
     { icon: Users, label: t("layout.referrals"), path: "/dashboard/referrals" },

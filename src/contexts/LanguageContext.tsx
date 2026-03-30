@@ -263,6 +263,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "layout.taskHistory": { ar: "سجل المهام", en: "Task History" },
   "layout.referrals": { ar: "الإحالات", en: "Referrals" },
   "layout.leaderboard": { ar: "المتصدرون", en: "Leaderboard" },
+  "layout.watchEarn": { ar: "شاهد واربح", en: "Watch & Earn" },
   "layout.vip": { ar: "VIP", en: "VIP" },
 
   // WITHDRAW
