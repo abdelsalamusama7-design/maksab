@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Zap, ListChecks, Users, Wallet, Star,
   Trophy, LogOut, ChevronRight, Bell, Menu, X, Settings,
-  ShieldCheck
+  ShieldCheck, Eye
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LanguageToggle from "@/components/ui/LanguageToggle";
